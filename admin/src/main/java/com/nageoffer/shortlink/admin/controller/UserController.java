@@ -2,7 +2,6 @@ package com.nageoffer.shortlink.admin.controller;
 
 import com.nageoffer.shortlink.admin.common.convention.result.Result;
 import com.nageoffer.shortlink.admin.common.convention.result.Results;
-import com.nageoffer.shortlink.admin.common.enums.UserErrorCodeEnum;
 import com.nageoffer.shortlink.admin.dto.resp.UserRespDTO;
 import com.nageoffer.shortlink.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +22,6 @@ public class UserController {
     @GetMapping("/api/shortlink/v1/user/{username}")
         public Result<UserRespDTO> getUserByUsername(@PathVariable("username") String username) {
             UserRespDTO result = userService.getUserByUsername(username);
-
-            if (result == null) {
-                return Results.<UserRespDTO>failure(UserErrorCodeEnum.USER_NULL.code(),
-                        UserErrorCodeEnum.USER_NULL.message());
-            } else {
-                return Results.success(result);
-            }
+            return Results.success(result);
     }
 }

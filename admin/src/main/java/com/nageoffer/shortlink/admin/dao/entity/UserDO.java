@@ -1,5 +1,7 @@
 package com.nageoffer.shortlink.admin.dao.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -16,7 +18,13 @@ public class UserDO {
     private String phone;
     private String mail;
     private Long deletionTime;
+
+    @TableField(fill = FieldFill.INSERT)
     private java.util.Date createTime;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private java.util.Date updateTime;
+
+    @TableField(fill = FieldFill.INSERT)
     private Integer delFlag;
 }

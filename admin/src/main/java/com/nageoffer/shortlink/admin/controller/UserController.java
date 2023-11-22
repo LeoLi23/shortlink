@@ -3,22 +3,25 @@ package com.nageoffer.shortlink.admin.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.nageoffer.shortlink.admin.common.convention.result.Result;
 import com.nageoffer.shortlink.admin.common.convention.result.Results;
+import com.nageoffer.shortlink.admin.dto.req.UserLoginReqDTO;
 import com.nageoffer.shortlink.admin.dto.req.UserRegisterReqDTO;
+import com.nageoffer.shortlink.admin.dto.req.UserUpdateReqDTO;
 import com.nageoffer.shortlink.admin.dto.resp.UserActualRespDTO;
+import com.nageoffer.shortlink.admin.dto.resp.UserLoginRespDTO;
 import com.nageoffer.shortlink.admin.dto.resp.UserRespDTO;
 import com.nageoffer.shortlink.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * User Management Controller
+ *  用户控制层
  */
 @RestController
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
      /**
-     * search user information by username
+     * 根据用户名获取用户信息
      */
     @GetMapping("/api/short-link/v1/user/{username}")
         public Result<UserRespDTO> getUserByUsername(@PathVariable("username") String username) {
@@ -27,7 +30,7 @@ public class UserController {
     }
 
     /**
-     * search user information by username
+     * 根据用户名获取真实用户信息
      */
     @GetMapping("api/short-link/v1/actual/user/{username}")
     public Result<UserActualRespDTO> getActualUserByUsername(@PathVariable("username") String username) {
@@ -35,7 +38,7 @@ public class UserController {
     }
 
     /**
-     * check if username exists
+     * 查询用户名是否存在
      */
     @GetMapping("/api/short-link/v1/user/has-username")
     public Result<Boolean> hasUsername(@RequestParam("username") String username) {
@@ -43,11 +46,37 @@ public class UserController {
     }
 
     /**
-     * user registration
+     * 用户注册
      */
-    @PostMapping("/api/short-link/v1/user/register")
+    @PostMapping("/api/short-link/v1/user")
     public Result<Void> register(@RequestBody UserRegisterReqDTO requestParam) {
         userService.register(requestParam);
         return Results.success();
+    }
+
+    /**
+     * 根据用户名修改用户
+     */
+    @PutMapping("/api/short-link/v1/user")
+    public Result<Void> update(@RequestBody UserUpdateReqDTO requestParam) {
+        userService.update(requestParam);
+        return Results.success();
+    }
+
+    /**
+     * 用户登陆
+     */
+    @PostMapping("/api/short-link/v1/user/login")
+    public Result<UserLoginRespDTO> login(@RequestBody UserLoginReqDTO requestParam) {
+        return Results.success(userService.login(requestParam));
+    }
+
+    /**
+     * 用户是否登录
+     */
+    @GetMapping("/api/short-link/v1/user/check-login")
+    public Result<Boolean> checkLogin(@RequestParam("username") String username,
+                                      @RequestParam("token") String token) {
+        return Results.success(userService.checkLogin(username, token));
     }
 }

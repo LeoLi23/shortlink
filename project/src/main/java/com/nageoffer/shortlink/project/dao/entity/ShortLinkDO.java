@@ -1,13 +1,22 @@
 package com.nageoffer.shortlink.project.dao.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
+import com.nageoffer.shortlink.project.common.database.BaseDO;
+import lombok.*;
+
+import java.util.Date;
+
 /**
  * 短链接分组实体类
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("t_link")
-public class ShortLinkDO {
+public class ShortLinkDO extends BaseDO {
     /**
      * ID
      */
@@ -46,40 +55,26 @@ public class ShortLinkDO {
     /**
      * 启用标识 0：未启用 1：已启用
      */
-    private Boolean enableStatus;
+    private Integer enableStatus;
 
     /**
      * 创建类型 0：控制台 1：接口
      */
-    private Boolean createdType;
+    private Integer createdType;
 
     /**
      * 有效期类型 0：永久有效 1：用户自定义
      */
-    private Boolean validDateType;
+    private Integer validDateType;
 
     /**
      * 有效期
      */
-    private String validDate;
+    private Date validDate;
 
     /**
      * 描述
      */
+    @TableField("`describe`")
     private String describe;
-
-    /**
-     * 创建时间
-     */
-    private String createTime;
-
-    /**
-     * 修改时间
-     */
-    private String updateTime;
-
-    /**
-     * 删除标识 0：未删除 1：已删除
-     */
-    private Boolean delFlag;
 }

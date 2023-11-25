@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.nageoffer.shortlink.project.dao.entity.ShortLinkDO;
 import com.nageoffer.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import com.nageoffer.shortlink.project.dto.req.ShortLinkPageReqDTO;
+import com.nageoffer.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
 import com.nageoffer.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import com.nageoffer.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import com.nageoffer.shortlink.project.dto.resp.ShortLinkPageRespDTO;
@@ -17,13 +18,29 @@ import java.util.List;
 public interface ShortLinkService extends IService<ShortLinkDO> {
     /**
      * 创建短链接
+     * @param requestParam ShortLinkCreateReqDTO
+     * @return ShortLinkCreateRespDTO
      */
     ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam);
 
     /**
      * 分页查询短链接
+     * @param requestParam ShortLinkPageReqDTO
+     * @return IPage<ShortLinkPageRespDTO>
      */
     IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam);
 
+    /**
+     * 列出分组短链接数量
+     * @param requestParam List<String>
+     * @return List<ShortLinkGroupCountQueryRespDTO>
+     */
     List<ShortLinkGroupCountQueryRespDTO> listGroupShortLinkCount(List<String> requestParam);
+
+    /**
+     * 修改短链接
+     * @param requestParam ShortLinkUpdateReqDTO
+     * @return Void
+     */
+    Void updateShortLink(ShortLinkUpdateReqDTO requestParam);
 }

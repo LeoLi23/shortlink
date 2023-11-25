@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 短链接后管
+ */
 @RestController
 public class ShortLinkController {
     ShortLinkRemoteService shortLinkRemoteService = new ShortLinkRemoteService(){};

@@ -14,7 +14,9 @@ import com.nageoffer.shortlink.admin.dto.req.UserRegisterReqDTO;
 import com.nageoffer.shortlink.admin.dto.req.UserUpdateReqDTO;
 import com.nageoffer.shortlink.admin.dto.resp.UserLoginRespDTO;
 import com.nageoffer.shortlink.admin.dto.resp.UserRespDTO;
+import com.nageoffer.shortlink.admin.service.GroupService;
 import com.nageoffer.shortlink.admin.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -32,18 +34,13 @@ import static com.nageoffer.shortlink.admin.common.constant.RedisCacheConstant.L
  * 用户接口实现层
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements UserService {
 
     private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
     private final RedissonClient redissonClient;
     private final StringRedisTemplate stringRedisTemplate;
-
-    public UserServiceImpl(RBloomFilter<String> userRegisterCachePenetrationBloomFilter,
-                           RedissonClient redissonClient, StringRedisTemplate stringRedisTemplate) {
-        this.userRegisterCachePenetrationBloomFilter = userRegisterCachePenetrationBloomFilter;
-        this.redissonClient = redissonClient;
-        this.stringRedisTemplate = stringRedisTemplate;
-    }
+    private final GroupService groupService;
 
     /**
      * 根据用户名获取用户信息
@@ -96,6 +93,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
                     throw new ClientException(UserErrorCodeEnum.USER_EXIST);
                 }
                 userRegisterCachePenetrationBloomFilter.add(requestParam.getUsername());
+                groupService.saveGroup("默认分组");
                 return;
             }
             throw new ClientException(UserErrorCodeEnum.USER_NAME_EXIST);

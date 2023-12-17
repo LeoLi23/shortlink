@@ -25,6 +25,12 @@ import java.util.List;
 public class ShortLinkController {
     private final ShortLinkService shortLinkService;
 
+    /**
+     * 短链接跳转
+     * @param shortUri String
+     * @param request ServletRequest
+     * @param response ServletResponse
+     */
     @GetMapping("/{short-uri}")
     public void restoreUrl(@PathVariable("short-uri") String shortUri,
                                            ServletRequest request,

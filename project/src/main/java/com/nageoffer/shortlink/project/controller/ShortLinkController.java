@@ -26,7 +26,7 @@ public class ShortLinkController {
     private final ShortLinkService shortLinkService;
 
     /**
-     * 短链接跳转
+     * 短链接跳转原始链接
      * @param shortUri String
      * @param request ServletRequest
      * @param response ServletResponse

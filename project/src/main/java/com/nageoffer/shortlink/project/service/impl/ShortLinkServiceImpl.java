@@ -29,6 +29,10 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -77,6 +81,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .shortUri(shortLinkSuffix)
                         .enableStatus(0)
                         .fullShortUrl(fullShortUrl)
+                        .favicon(getFavicon(requestParam.getOriginUrl()))
                         .build();
         ShortLinkGotoDO linkGotoDO = ShortLinkGotoDO.builder()
                 .fullShortUrl(fullShortUrl)
@@ -293,4 +298,33 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         }
         return HashUtil.hashToBase62(shortUri);
     }
+
+    /**
+     * 获取网站图标
+     * @param url 网站地址
+     * @return 网站图标地址
+     */
+    private String getFavicon(String url) {
+        try {
+            // Fetch and parse the HTML document
+            Document doc = Jsoup.connect(url).get();
+
+            // Look for link elements with rel=icon or rel="shortcut icon"
+            Elements icons = doc.head().select("link[href][rel=icon], link[href][rel='shortcut icon']");
+
+            for (Element icon : icons) {
+                // Return the href attribute of the favicon link
+                return icon.attr("abs:href");
+            }
+
+            // Fallback: Check for /favicon.ico at the root of the domain
+            return url + "/favicon.ico";
+        } catch (Exception e) {
+            // Handle exceptions (e.g., IOException, IllegalArgumentException)
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 }

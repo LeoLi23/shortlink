@@ -17,14 +17,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nageoffer.shortlink.project.common.convention.exception.ServiceException;
 import com.nageoffer.shortlink.project.common.enums.ValidDateTypeEnum;
-import com.nageoffer.shortlink.project.dao.entity.LinkAccessStatsDO;
-import com.nageoffer.shortlink.project.dao.entity.LinkLocaleStatsDO;
-import com.nageoffer.shortlink.project.dao.entity.ShortLinkDO;
-import com.nageoffer.shortlink.project.dao.entity.ShortLinkGotoDO;
-import com.nageoffer.shortlink.project.dao.mapper.LinkAccessStatsMapper;
-import com.nageoffer.shortlink.project.dao.mapper.LinkLocaleStatsMapper;
-import com.nageoffer.shortlink.project.dao.mapper.ShortLinkGotoMapper;
-import com.nageoffer.shortlink.project.dao.mapper.ShortLinkMapper;
+import com.nageoffer.shortlink.project.dao.entity.*;
+import com.nageoffer.shortlink.project.dao.mapper.*;
 import com.nageoffer.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import com.nageoffer.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import com.nageoffer.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
@@ -59,6 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.nageoffer.shortlink.project.common.constant.RedisKeyConstant.*;
 import static com.nageoffer.shortlink.project.common.constant.ShortLinkConstant.AMAP_REMOTE_URL;
@@ -79,6 +74,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final RedissonClient redissonClient;
     private final LinkAccessStatsMapper linkAccessStatsMapper;
     private final LinkLocaleStatsMapper linkLocaleStatsMapper;
+    private final LinkOsStatsMapper linkOsStatsMapper;
+    private final LinkBrowserStatsMapper linkBrowserStatsMapper;
+    private final LinkAcessLogsMapper linkAcessLogsMapper;
 
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
@@ -305,14 +303,15 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         Cookie[] cookies = ((HttpServletRequest) request).getCookies();
 
         try {
+            AtomicReference<String> uv = new AtomicReference<>();
             Runnable addResponseCookieTask = () -> {
-                String uv = UUID.fastUUID().toString();
-                Cookie uvCookie = new Cookie("uv", uv);
+                uv.set(UUID.fastUUID().toString());
+                Cookie uvCookie = new Cookie("uv", uv.get());
                 uvCookie.setMaxAge(60 * 60 * 24 * 30);
                 uvCookie.setPath(StrUtil.sub(fullShortUrl, fullShortUrl.indexOf("/"), fullShortUrl.length()));
                 ((HttpServletResponse) response).addCookie(uvCookie);
                 uvFirstFlag.set(Boolean.TRUE);
-                stringRedisTemplate.opsForSet().add("short-link:stats:uv:" + fullShortUrl, uv);
+                stringRedisTemplate.opsForSet().add("short-link:stats:uv:" + fullShortUrl, uv.get());
             };
 
             if (ArrayUtil.isNotEmpty(cookies)) {
@@ -321,6 +320,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .findFirst()
                         .map(Cookie::getValue)
                         .ifPresentOrElse(each -> {
+                            uv.set(each);
                             Long uvAdded = stringRedisTemplate.opsForSet().add("short-link:stats:uv:" + fullShortUrl, each);
                             uvFirstFlag.set(uvAdded != null && uvAdded > 0L);
                         }, addResponseCookieTask);
@@ -376,6 +376,37 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .date(DateUtil.today())
                         .build();
                 linkLocaleStatsMapper.shortLinkLocaleState(linkLocaleStatsDO);
+
+                String os = LinkUtil.getOs((HttpServletRequest) request);
+                String browser = LinkUtil.getBrowser((HttpServletRequest) request);
+
+                LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
+                        .fullShortUrl(fullShortUrl)
+                        .gid(gid)
+                        .date(DateUtil.today())
+                        .cnt(1)
+                        .os(os)
+                        .build();
+                linkOsStatsMapper.shortLinkOsState(linkOsStatsDO);
+
+                LinkBrowserStatsDO linkBrowserStatsDO = LinkBrowserStatsDO.builder()
+                        .browser(browser)
+                        .cnt(1)
+                        .gid(gid)
+                        .fullShortUrl(fullShortUrl)
+                        .date(DateUtil.today())
+                        .build();
+                linkBrowserStatsMapper.shortLinkBrowserState(linkBrowserStatsDO);
+
+                LinkAccessLogsDO linkAccessLogsDO = LinkAccessLogsDO.builder()
+                        .fullShortUrl(fullShortUrl)
+                        .gid(gid)
+                        .user(uv.get())
+                        .ip(remoteAddr)
+                        .os(os)
+                        .browser(browser)
+                        .build();
+                linkAcessLogsMapper.insert(linkAccessLogsDO);
             }
 
         } catch (Throwable e) {

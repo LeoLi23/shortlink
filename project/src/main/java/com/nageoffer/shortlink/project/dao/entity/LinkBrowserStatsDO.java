@@ -8,14 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 短链接地区统计实体
+ * 短链接OS统计DO
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("t_link_locale_stats")
-public class LinkLocaleStatsDO extends BaseDO {
+@TableName("t_link_browser_stats")
+public class LinkBrowserStatsDO extends BaseDO {
     /**
      * ID
      */
@@ -37,20 +37,7 @@ public class LinkLocaleStatsDO extends BaseDO {
      */
     private Integer cnt;
     /**
-     * 省份名称
+     * 操作系统
      */
-    private String province;
-    /**
-     * 市名称
-     */
-    private String city;
-    /**
-     * 城市编码
-     */
-    private String adcode;
-    /**
-     * 国家标识
-     */
-    private String country;
-
+    private String browser;
 }

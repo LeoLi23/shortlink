@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.nageoffer.shortlink.project.common.database.BaseDO;
 import lombok.*;
 
+import java.util.Date;
+
 /**
  * 短链接访问统计表
  */
@@ -32,7 +34,7 @@ public class LinkAccessStatsDO extends BaseDO {
     /**
     * 日期
     */
-    private String date;
+    private Date date;
 
     /**
     * 访问量

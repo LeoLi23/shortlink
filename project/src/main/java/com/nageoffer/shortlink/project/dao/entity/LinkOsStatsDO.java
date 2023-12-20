@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * 短链接OS统计DO
  */
@@ -31,7 +33,7 @@ public class LinkOsStatsDO extends BaseDO {
     /**
      * 日期
      */
-    private String date;
+    private Date date;
     /**
      * 访问量
      */

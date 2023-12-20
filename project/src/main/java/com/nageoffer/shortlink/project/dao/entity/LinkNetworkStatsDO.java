@@ -2,22 +2,20 @@ package com.nageoffer.shortlink.project.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.nageoffer.shortlink.project.common.database.BaseDO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
 /**
- * 短链接地区统计实体
+ * 短链接网络统计DO
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("t_link_locale_stats")
-public class LinkLocaleStatsDO extends BaseDO {
+@TableName("t_link_network_stats")
+public class LinkNetworkStatsDO extends BaseDO {
     /**
      * ID
      */
@@ -39,20 +37,7 @@ public class LinkLocaleStatsDO extends BaseDO {
      */
     private Integer cnt;
     /**
-     * 省份名称
+     * 访问网络
      */
-    private String province;
-    /**
-     * 市名称
-     */
-    private String city;
-    /**
-     * 城市编码
-     */
-    private String adcode;
-    /**
-     * 国家标识
-     */
-    private String country;
-
+    private String network;
 }

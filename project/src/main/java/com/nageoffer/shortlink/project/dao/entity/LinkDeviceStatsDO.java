@@ -4,15 +4,17 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.nageoffer.shortlink.project.common.database.BaseDO;
 import lombok.*;
 
+import java.util.Date;
+
 /**
  * 短链接设备统计DO
- */
-@EqualsAndHashCode(callSuper = true)
+ */@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("t_link_device_stats")
+
 public class LinkDeviceStatsDO extends BaseDO {
     /**
      * ID
@@ -29,7 +31,7 @@ public class LinkDeviceStatsDO extends BaseDO {
     /**
      * 日期
      */
-    private String date;
+    private Date date;
     /**
      * 访问量
      */

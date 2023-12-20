@@ -76,7 +76,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkLocaleStatsMapper linkLocaleStatsMapper;
     private final LinkOsStatsMapper linkOsStatsMapper;
     private final LinkBrowserStatsMapper linkBrowserStatsMapper;
-    private final LinkAcessLogsMapper linkAcessLogsMapper;
+    private final LinkAccessLogsMapper linkAccessLogsMapper;
     private final LinkDeviceStatsMapper linkDeviceStatsMapper;
     private final LinkNetworkStatsMapper linkNetworkStatsMapper;
 
@@ -352,7 +352,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .weekday(weekValue)
                     .fullShortUrl(fullShortUrl)
                     .gid(gid)
-                    .date(DateUtil.today())
+                    .date(new Date())
                     .build();
 
             linkAccessStatsMapper.shortLinkStats(linkAccessStatsDO);
@@ -375,7 +375,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .country("中国")
                         .cnt(1)
                         .gid(gid)
-                        .date(DateUtil.today())
+                        .date(new Date())
                         .build();
                 linkLocaleStatsMapper.shortLinkLocaleState(linkLocaleStatsDO);
 
@@ -385,7 +385,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
                         .fullShortUrl(fullShortUrl)
                         .gid(gid)
-                        .date(DateUtil.today())
+                        .date(new Date())
                         .cnt(1)
                         .os(os)
                         .build();
@@ -396,7 +396,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .cnt(1)
                         .gid(gid)
                         .fullShortUrl(fullShortUrl)
-                        .date(DateUtil.today())
+                        .date(new Date())
                         .build();
                 linkBrowserStatsMapper.shortLinkBrowserState(linkBrowserStatsDO);
 
@@ -408,12 +408,12 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .os(os)
                         .browser(browser)
                         .build();
-                linkAcessLogsMapper.insert(linkAccessLogsDO);
+                linkAccessLogsMapper.insert(linkAccessLogsDO);
 
                 LinkDeviceStatsDO linkDeviceStatsDO = LinkDeviceStatsDO.builder()
                         .fullShortUrl(fullShortUrl)
                         .gid(gid)
-                        .date(DateUtil.today())
+                        .date(new Date())
                         .cnt(1)
                         .device(LinkUtil.getDevice((HttpServletRequest) request))
                         .build();
@@ -424,7 +424,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .cnt(1)
                         .gid(gid)
                         .fullShortUrl(fullShortUrl)
-                        .date(DateUtil.today())
+                        .date(new Date())
                         .build();
                 linkNetworkStatsMapper.shortLinkNetworkState(linkNetworkStatsDO);
             }

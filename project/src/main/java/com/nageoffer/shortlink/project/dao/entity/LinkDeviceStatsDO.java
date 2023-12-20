@@ -5,15 +5,15 @@ import com.nageoffer.shortlink.project.common.database.BaseDO;
 import lombok.*;
 
 /**
- * 短链接OS统计DO
+ * 短链接设备统计DO
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("t_link_browser_stats")
-public class LinkBrowserStatsDO extends BaseDO {
+@TableName("t_link_device_stats")
+public class LinkDeviceStatsDO extends BaseDO {
     /**
      * ID
      */
@@ -35,7 +35,7 @@ public class LinkBrowserStatsDO extends BaseDO {
      */
     private Integer cnt;
     /**
-     * 操作系统
+     * 访问设备
      */
-    private String browser;
+    private String device;
 }

@@ -19,11 +19,13 @@ package com.nageoffer.shortlink.admin.remote.dto.req;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 短链接分页请求参数
  * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：link）获取项目资料
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ShortLinkPageReqDTO extends Page {
 

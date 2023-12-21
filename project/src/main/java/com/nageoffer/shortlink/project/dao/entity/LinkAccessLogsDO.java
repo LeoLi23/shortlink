@@ -15,6 +15,11 @@ import lombok.*;
 @TableName("t_link_access_logs")
 public class LinkAccessLogsDO extends BaseDO {
     /**
+     * id
+     */
+    private Long id;
+
+    /**
      * 完整短链接
      */
     private String fullShortUrl;

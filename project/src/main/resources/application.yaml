@@ -2,20 +2,17 @@ server:
   port: 8001
 
 spring:
-  mvc:
-    view:
-      prefix: /templates/
-      suffix: .html
   datasource:
-    # ShardingSphere 对 Driver 自定义，实现分库分表等隐藏逻辑
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
-    # ShardingSphere 配置文件路径
     url: jdbc:shardingsphere:classpath:shardingsphere-config-${database.env:dev}.yaml
-
   data:
     redis:
       host: 127.0.0.1
       port: 6379
+  mvc:
+    view:
+      prefix: /templates/
+      suffix: .html
 
 short-link:
   domain:
@@ -23,6 +20,15 @@ short-link:
   stats:
     locale:
       amap-key: c5ac7cc2e692ca0f6dcf7f207b3e6d21
+  goto-domain:
+    white-list:
+      enable: true
+      names: '拿个offer,知乎,掘金,博客园'
+      details:
+        - nageoffer.com
+        - zhihu.com
+        - juejin.cn
+        - cnblogs.com
 
 mybatis-plus:
   configuration:

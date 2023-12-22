@@ -18,6 +18,8 @@ spring:
       port: 6379
 
 short-link:
+  domain:
+    default: nurl.ink:8001
   stats:
     locale:
       amap-key: c5ac7cc2e692ca0f6dcf7f207b3e6d21

@@ -17,37 +17,30 @@
 
 package com.nageoffer.shortlink.project.mq.producer;
 
-import cn.hutool.core.lang.UUID;
-import com.nageoffer.shortlink.project.dto.biz.ShortLinkStatsRecordDTO;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RBlockingDeque;
-import org.redisson.api.RDelayedQueue;
-import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
-import static com.nageoffer.shortlink.project.common.constant.RedisKeyConstant.DELAY_QUEUE_STATS_KEY;
+import java.util.Map;
 
 /**
- * 延迟消费短链接统计发送者
+ * 短链接监控状态保存消息队列生产者
  * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：link）获取项目资料
  */
 @Component
 @RequiredArgsConstructor
-public class DelayShortLinkStatsProducer {
+public class ShortLinkStatsSaveProducer {
 
-    private final RedissonClient redissonClient;
+    private final StringRedisTemplate stringRedisTemplate;
+
+    @Value("${spring.data.redis.channel-topic.short-link-stats}")
+    private String topic;
 
     /**
      * 发送延迟消费短链接统计
-     *
-     * @param statsRecord 短链接统计实体参数
      */
-    public void send(ShortLinkStatsRecordDTO statsRecord) {
-        statsRecord.setKeys(UUID.fastUUID().toString());
-        RBlockingDeque<ShortLinkStatsRecordDTO> blockingDeque = redissonClient.getBlockingDeque(DELAY_QUEUE_STATS_KEY);
-        RDelayedQueue<ShortLinkStatsRecordDTO> delayedQueue = redissonClient.getDelayedQueue(blockingDeque);
-        delayedQueue.offer(statsRecord, 5, TimeUnit.SECONDS);
+    public void send(Map<String, String> producerMap) {
+        stringRedisTemplate.opsForStream().add(topic, producerMap);
     }
 }
